@@ -58,7 +58,20 @@ config :vintage_net,
        type: VintageNetEthernet,
        ipv4: %{method: :dhcp}
      }},
-    {"wlan0", %{type: VintageNetWiFi}}
+    {"wlan0",
+     %{
+       type: VintageNetWiFi,
+       vintage_net_wifi: %{
+         networks: [
+           %{
+             key_mgmt: :wpa_psk,
+             ssid: System.get_env("WIFI_SSID"),
+             psk: System.get_env("WIFI_PSK")
+           }
+         ]
+       },
+       ipv4: %{method: :dhcp}
+     }}
   ]
 
 config :mdns_lite,
@@ -92,6 +105,9 @@ config :mdns_lite,
       port: 4369
     }
   ]
+
+# https://github.com/lau/tzdata#data-directory-and-releases
+config :tzdata, :data_dir, "/data/tzdata"
 
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
