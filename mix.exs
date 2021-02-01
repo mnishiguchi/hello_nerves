@@ -10,6 +10,7 @@ defmodule NervesEnvironmentSensor.MixProject do
       app: @app,
       version: @version,
       elixir: "~> 1.9",
+      elixirc_paths: elixirc_paths(Mix.env()),
       archives: [nerves_bootstrap: "~> 1.10"],
       start_permanent: Mix.env() == :prod,
       build_embedded: true,
@@ -27,6 +28,10 @@ defmodule NervesEnvironmentSensor.MixProject do
     ]
   end
 
+  # ensure test/support is compiled
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
+
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
@@ -35,6 +40,11 @@ defmodule NervesEnvironmentSensor.MixProject do
       {:shoehorn, "~> 0.7.0"},
       {:ring_logger, "~> 0.8.1"},
       {:toolshed, "~> 0.2.13"},
+      {:bmp280, github: "mnishiguchi/bmp280", branch: "mnishiguchi/gas"},
+      {:elixir_bme680, "~> 0.2.2"},
+      {:httpoison, "~> 1.8"},
+      {:jason, "~> 1.2"},
+      {:timex, "~> 3.6"},
 
       # Dependencies for all targets except :host
       {:nerves_runtime, "~> 0.11.3", targets: @all_targets},
@@ -49,7 +59,10 @@ defmodule NervesEnvironmentSensor.MixProject do
       {:nerves_system_rpi4, "~> 1.13", runtime: false, targets: :rpi4},
       {:nerves_system_bbb, "~> 2.8", runtime: false, targets: :bbb},
       {:nerves_system_osd32mp1, "~> 0.4", runtime: false, targets: :osd32mp1},
-      {:nerves_system_x86_64, "~> 1.13", runtime: false, targets: :x86_64}
+      {:nerves_system_x86_64, "~> 1.13", runtime: false, targets: :x86_64},
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:mox, "~> 1.0.0", only: :test}
     ]
   end
 

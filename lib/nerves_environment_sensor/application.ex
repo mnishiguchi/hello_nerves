@@ -13,8 +13,6 @@ defmodule NervesEnvironmentSensor.Application do
     children =
       [
         # Children for all targets
-        # Starts a worker by calling: NervesEnvironmentSensor.Worker.start_link(arg)
-        # {NervesEnvironmentSensor.Worker, arg},
       ] ++ children(target())
 
     Supervisor.start_link(children, opts)
@@ -24,16 +22,13 @@ defmodule NervesEnvironmentSensor.Application do
   def children(:host) do
     [
       # Children that only run on the host
-      # Starts a worker by calling: NervesEnvironmentSensor.Worker.start_link(arg)
-      # {NervesEnvironmentSensor.Worker, arg},
     ]
   end
 
   def children(_target) do
     [
       # Children for all targets except host
-      # Starts a worker by calling: NervesEnvironmentSensor.Worker.start_link(arg)
-      # {NervesEnvironmentSensor.Worker, arg},
+      {NervesEnvironmentSensor.SensorWorker, nil}
     ]
   end
 
