@@ -1,6 +1,8 @@
 # NervesEnvironmentSensor
 
-**TODO: Add description**
+A Nerves-powered app that reads data from BME680 sensor and sent it to a remote server.
+
+![](https://user-images.githubusercontent.com/7563926/107126374-92eae380-687d-11eb-8e6a-b004434ee4e6.png)
 
 ## Targets
 
