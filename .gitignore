@@ -18,3 +18,5 @@ erl_crash.dump
 
 # Secrets
 .envrc
+
+.elixir_ls

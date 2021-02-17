@@ -7,31 +7,11 @@ defmodule NervesEnvironmentSensor.SensorWorker do
 
   require Logger
 
-  @interval :timer.seconds(5)
-  @default_bus_name "i2c-1"
-  @default_bus_address 0x77
+  @default_interval :timer.seconds(5)
 
-  defmodule State do
-    @moduledoc false
-    defstruct [:interval, :measurement, :sensor_pid, :sensor_address]
+  def whereis, do: Process.whereis(__MODULE__)
 
-    @type t :: %__MODULE__{
-            interval: pos_integer(),
-            measurement: NervesEnvironmentSensor.Measurement.t(),
-            sensor_pid: pid,
-            sensor_address: 0..127
-          }
-  end
-
-  @spec whereis :: nil | pid | port
-  def whereis do
-    Process.whereis(__MODULE__)
-  end
-
-  @spec get_state :: map
-  def get_state do
-    :sys.get_state(__MODULE__)
-  end
+  def get_state, do: :sys.get_state(__MODULE__)
 
   def start_link(opts \\ []) do
     case GenServer.start_link(__MODULE__, opts, name: __MODULE__) do
@@ -43,18 +23,12 @@ defmodule NervesEnvironmentSensor.SensorWorker do
 
   @impl true
   def init(opts \\ []) do
-    # Parse options
-    bus_name = opts[:bus_name] || @default_bus_name
-    bus_address = opts[:bus_address] || @default_bus_address
+    {:ok, sensor_pid} = initialize_sensor(bus_name: opts[:bus_name], bus_address: opts[:bus_address])
 
-    # Initialize the sensor
-    {:ok, sensor_pid} = sensor_device_module().start_link(bus_name: bus_name, bus_address: bus_address)
-
-    initial_state = %__MODULE__.State{
-      interval: opts[:interval] || @interval,
+    initial_state = %{
+      interval: opts[:interval] || @default_interval,
       measurement: nil,
-      sensor_pid: sensor_pid,
-      sensor_address: bus_address
+      sensor_pid: sensor_pid
     }
 
     {:ok, initial_state, {:continue, :after_init}}
@@ -70,39 +44,56 @@ defmodule NervesEnvironmentSensor.SensorWorker do
   def handle_info(:schedule_measurement, %{sensor_pid: sensor_pid, interval: interval} = state) do
     Process.send_after(self(), :schedule_measurement, interval)
 
-    # Read data from the sensor. Let it crash unless successful
-    case sensor_device_module().read(sensor_pid) do
-      {:ok, measurement} ->
-        measurement
+    case read_sensor(sensor_pid) do
+      {:ok, new_measurement} ->
+        new_measurement = Map.put(new_measurement, :time, utc_now_iso8601())
+
+        new_measurement
         |> log_measurement()
-        |> sensor_api_module().post_measurement()
+        |> post_measurement()
         |> case do
-          {:ok, _response} -> {:noreply, %{state | measurement: measurement}}
-          {:error, reason} -> raise reason
+          {:ok, _response} -> {:noreply, %{state | measurement: new_measurement}}
+          {:error, _reason} -> Logger.error("Error posting measurement")
         end
 
-      {:error, reason} ->
-        raise reason
+      {:error, _reason} ->
+        Logger.error("Error reading measurement")
     end
   end
 
   @impl true
   def terminate(reason, _state) do
-    Logger.error(inspect(reason))
+    Logger.error("Stopping #{__MODULE__} #{inspect(reason)}")
+  end
+
+  defp initialize_sensor(opts) do
+    sensor_device_module().start_link(opts)
+  end
+
+  defp read_sensor(sensor_pid) do
+    sensor_device_module().read(sensor_pid)
+  end
+
+  defp post_measurement(measurement) do
+    sensor_api_module().post_measurement(measurement)
   end
 
   defp log_measurement(measurement) do
-    measurement |> Map.from_struct() |> inspect() |> Logger.info()
+    Logger.info(inspect(measurement))
     measurement
+  end
+
+  defp utc_now_iso8601 do
+    Timex.format!(Timex.now(), "{ISO:Extended}")
   end
 
   # This enables us to switch the implementation with a mock.
   # https://hexdocs.pm/elixir/master/library-guidelines.html#avoid-compile-time-application-configuration
   defp sensor_device_module() do
-    Application.get_env(:nerves_environment_sensor, :sensor_device_module, NervesEnvironmentSensor.SensorDevice.BME680)
+    Application.fetch_env!(:nerves_environment_sensor, :sensor_device_module)
   end
 
   defp sensor_api_module() do
-    Application.get_env(:nerves_environment_sensor, :sensor_api_module, NervesEnvironmentSensor.SensorApi.Web)
+    Application.fetch_env!(:nerves_environment_sensor, :sensor_api_module)
   end
 end

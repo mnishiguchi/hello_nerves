@@ -8,7 +8,10 @@ import Config
 # Enable the Nerves integration with Mix
 Application.start(:nerves_bootstrap)
 
-config :nerves_environment_sensor, target: Mix.target()
+config :nerves_environment_sensor,
+  target: Mix.target(),
+  sensor_device_module: NervesEnvironmentSensor.SensorDevice.AHT20,
+  sensor_api_module: NervesEnvironmentSensor.SensorApi.V1
 
 # Customize non-Elixir parts of the firmware. See
 # https://hexdocs.pm/nerves/advanced-configuration.html for details.

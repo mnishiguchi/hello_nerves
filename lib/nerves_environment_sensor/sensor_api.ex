@@ -6,7 +6,7 @@ defmodule NervesEnvironmentSensor.SensorApi do
   @callback post_measurement(NervesEnvironmentSensor.Measurement.t()) :: {:ok, any} | {:error, any}
 end
 
-defmodule NervesEnvironmentSensor.SensorApi.Web do
+defmodule NervesEnvironmentSensor.SensorApi.V1 do
   @moduledoc false
   @behaviour NervesEnvironmentSensor.SensorApi
 
@@ -14,17 +14,13 @@ defmodule NervesEnvironmentSensor.SensorApi.Web do
 
   @impl true
   def post_measurement(measurement) do
-    # TODO: Implement
+    # TODO: Implement API server
     # measurement
-    # |> stringify_measurement()
+    # |> Jason.encode!()
     # |> HTTPoison.post(@endpoint_url)
-    {:ok, %{status_code: 200}}
-  end
 
-  def stringify_measurement(measurement) do
-    measurement
-    |> Map.from_struct()
-    |> Jason.encode!()
+    # This is a placeholder response
+    {:ok, %{status_code: 200}}
   end
 end
 

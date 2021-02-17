@@ -5,7 +5,6 @@ defmodule SensorWorkerTest do
   import Mox
 
   alias NervesEnvironmentSensor.{
-    Measurement,
     MockSensorApi,
     MockSensorDevice,
     SensorApi,
@@ -33,7 +32,7 @@ defmodule SensorWorkerTest do
 
       assert %{
                interval: interval,
-               measurement: %Measurement{
+               measurement: %{
                  altitude_m: 99.80845853673719,
                  dew_point_c: 1.8098743179175818,
                  gas_resistance_ohms: 4358.471915520684,
@@ -42,14 +41,13 @@ defmodule SensorWorkerTest do
                  temperature_c: 29.437646528458572,
                  time: _
                },
-               sensor_pid: _,
-               sensor_address: 119
+               sensor_pid: _
              } = result1
 
       Process.sleep(interval)
 
       result2 = :sys.get_state(pid)
-      assert result1.measurement.time == result2.measurement.time
+      refute result1.measurement.time == result2.measurement.time
     end
   end
 end

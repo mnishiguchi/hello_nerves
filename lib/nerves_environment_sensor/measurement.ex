@@ -1,25 +1,16 @@
 defmodule NervesEnvironmentSensor.Measurement do
   @moduledoc """
-  One measurement from the senor.
+  One measurement from the senor. The basic structure is adopted from the
+  [fhunleth/bmp280](https://github.com/fhunleth/bmp280) library.
   """
 
-  defstruct [
-    :altitude_m,
-    :dew_point_c,
-    :gas_resistance_ohms,
-    :humidity_rh,
-    :pressure_pa,
-    :temperature_c,
-    :time
-  ]
-
-  @type t :: %__MODULE__{
-          altitude_m: number,
-          dew_point_c: number,
-          gas_resistance_ohms: number,
-          humidity_rh: number,
-          pressure_pa: number,
-          temperature_c: number,
-          time: number
+  @type t :: %{
+          required(:humidity_rh) => number,
+          required(:temperature_c) => number,
+          optional(:altitude_m) => number,
+          optional(:dew_point_c) => number,
+          optional(:gas_resistance_ohms) => number,
+          optional(:pressure_pa) => number,
+          optional(:time) => String.t()
         }
 end
