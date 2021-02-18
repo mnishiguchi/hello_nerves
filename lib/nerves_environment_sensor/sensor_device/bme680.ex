@@ -2,7 +2,10 @@ defmodule NervesEnvironmentSensor.SensorDevice.BME680 do
   @moduledoc """
   Represents a BME680 sensor. Implements the `NervesEnvironmentSensor.SensorDevice` behaviour.
   """
-  @behaviour NervesEnvironmentSensor.SensorDevice
+
+  alias NervesEnvironmentSensor.{SensorApi, SensorDevice}
+
+  @behaviour SensorDevice
 
   @default_bus_name "i2c-1"
   @default_bus_address 0x77
@@ -23,7 +26,7 @@ defmodule NervesEnvironmentSensor.SensorDevice.BME680 do
     end
   end
 
-  @spec format_measurement(map) :: NervesEnvironmentSensor.Measurement.t()
+  @spec format_measurement(map) :: SensorApi.measurement()
   def format_measurement(from_sensor) do
     %{
       altitude_m: from_sensor.altitude_m,

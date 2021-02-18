@@ -2,7 +2,10 @@ defmodule NervesEnvironmentSensor.SensorDevice.AHT20 do
   @moduledoc """
   Represents a AHT20 sensor. Implements the `NervesEnvironmentSensor.SensorDevice` behaviour.
   """
-  @behaviour NervesEnvironmentSensor.SensorDevice
+
+  alias NervesEnvironmentSensor.{SensorApi, SensorDevice}
+
+  @behaviour SensorDevice
 
   @default_bus_name "i2c-1"
   @default_bus_address 0x38
@@ -23,7 +26,7 @@ defmodule NervesEnvironmentSensor.SensorDevice.AHT20 do
     end
   end
 
-  @spec format_measurement(map) :: NervesEnvironmentSensor.Measurement.t()
+  @spec format_measurement(map) :: SensorApi.measurement()
   def format_measurement(from_sensor) do
     %{
       humidity_rh: from_sensor.humidity_rh,

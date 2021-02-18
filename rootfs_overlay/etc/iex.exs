@@ -17,5 +17,5 @@ end
 alias NervesEnvironmentSensor.{
   SensorApi,
   SensorDevice,
-  SensorWorker
+  Worker
 }

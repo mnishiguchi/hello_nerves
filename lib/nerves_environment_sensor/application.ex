@@ -28,7 +28,7 @@ defmodule NervesEnvironmentSensor.Application do
   def children(_target) do
     [
       # Children for all targets except host
-      {NervesEnvironmentSensor.SensorWorker, nil}
+      {NervesEnvironmentSensor.Worker, nil}
     ]
   end
 
