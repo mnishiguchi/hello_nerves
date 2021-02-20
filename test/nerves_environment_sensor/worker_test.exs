@@ -26,7 +26,7 @@ defmodule NervesEnvironmentSensor.WorkerTest do
 
   describe "start_link" do
     test "has correct state" do
-      assert {:ok, pid} = Worker.start_link()
+      assert {:ok, pid} = Worker.start_link(interval: 5000)
       result1 = :sys.get_state(pid)
 
       assert %{
