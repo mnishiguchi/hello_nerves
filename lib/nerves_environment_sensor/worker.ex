@@ -18,7 +18,7 @@ defmodule NervesEnvironmentSensor.Worker do
   def init(opts \\ []) do
     {:ok, sensor_pid} = init_sensor(bus_name: opts[:bus_name], bus_address: opts[:bus_address])
 
-    # Interval and measurement do not have to be kept in the state but nice to have for ease of testing.
+    # Interval and measurement do not have to be kept in the state but are nice to have for ease of testing.
     state = %{
       interval: opts[:interval] || @default_interval,
       measurement: nil,
@@ -50,8 +50,9 @@ defmodule NervesEnvironmentSensor.Worker do
             {:noreply, %{state | measurement: new_measurement}}
 
           {:ok, %{status_code: status_code}} ->
-            Logger.error("Error posting measurement: #{status_code}")
-            {:noreply, %{state | measurement: %{error: status_code}}}
+            reason = Plug.Conn.Status.reason_atom(status_code)
+            Logger.error("Error posting measurement: #{reason}")
+            {:noreply, %{state | measurement: %{error: reason}}}
 
           {:error, %{reason: reason}} ->
             Logger.error("Error posting measurement: #{reason}")

@@ -46,6 +46,7 @@ defmodule NervesEnvironmentSensor.MixProject do
       {:jason, "~> 1.2"},
       {:timex, "~> 3.6"},
       {:aht20, github: "mnishiguchi/aht20", branch: "main"},
+      {:plug, "~> 1.7"},
 
       # Dependencies for all targets except :host
       {:nerves_runtime, "~> 0.11.3", targets: @all_targets},

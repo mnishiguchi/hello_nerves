@@ -48,7 +48,7 @@ defmodule NervesEnvironmentSensor.WorkerTest do
       |> Mox.expect(:post_measurement, 1, fn _measurement -> {:ok, %{status_code: 400}} end)
 
       assert {:ok, pid} = Worker.start_link()
-      assert %{measurement: %{error: 400}} = :sys.get_state(pid)
+      assert %{measurement: %{error: :bad_request}} = :sys.get_state(pid)
     end
 
     test "API connection error" do
