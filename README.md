@@ -1,8 +1,8 @@
 # NervesEnvironmentSensor
 
-A Nerves-powered app that reads data from a sensor and sent it to a remote server.
+A Nerves-powered app that reads data from a sensor and sends it to a remote server periodically.
 
-![](https://user-images.githubusercontent.com/7563926/107126374-92eae380-687d-11eb-8e6a-b004434ee4e6.png)
+![](https://user-images.githubusercontent.com/7563926/108598430-7cec2100-735b-11eb-86a9-3cdc6d85156f.png)
 
 ## Targets
 
