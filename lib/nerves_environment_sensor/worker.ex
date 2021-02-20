@@ -41,7 +41,7 @@ defmodule NervesEnvironmentSensor.Worker do
     case read_sensor(sensor_pid) do
       {:error, reason} ->
         Logger.error("Error reading sensor: #{reason}")
-        {:noreply, %{state | measurement: nil}}
+        {:noreply, %{state | measurement: %{error: reason}}}
 
       {:ok, new_measurement} ->
         case post_measurement(new_measurement) do
@@ -51,11 +51,11 @@ defmodule NervesEnvironmentSensor.Worker do
 
           {:ok, %{status_code: status_code}} ->
             Logger.error("Error posting measurement: #{status_code}")
-            {:noreply, %{state | measurement: nil}}
+            {:noreply, %{state | measurement: %{error: status_code}}}
 
           {:error, %{reason: reason}} ->
             Logger.error("Error posting measurement: #{reason}")
-            {:noreply, %{state | measurement: nil}}
+            {:noreply, %{state | measurement: %{error: reason}}}
         end
     end
   end

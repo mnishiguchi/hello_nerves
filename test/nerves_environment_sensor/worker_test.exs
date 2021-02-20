@@ -43,20 +43,20 @@ defmodule NervesEnvironmentSensor.WorkerTest do
              } = result1
     end
 
-    test "API Bad request" do
+    test "API bad request" do
       MockSensorApi
       |> Mox.expect(:post_measurement, 1, fn _measurement -> {:ok, %{status_code: 400}} end)
 
       assert {:ok, pid} = Worker.start_link()
-      assert %{measurement: nil} = :sys.get_state(pid)
+      assert %{measurement: %{error: 400}} = :sys.get_state(pid)
     end
 
-    test "API Error" do
+    test "API connection error" do
       MockSensorApi
       |> Mox.expect(:post_measurement, 1, fn _measurement -> {:error, %{reason: :econnrefused}} end)
 
       assert {:ok, pid} = Worker.start_link()
-      assert %{measurement: nil} = :sys.get_state(pid)
+      assert %{measurement: %{error: :econnrefused}} = :sys.get_state(pid)
     end
   end
 end
