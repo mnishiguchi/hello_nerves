@@ -32,7 +32,6 @@ defmodule NervesEnvironmentSensor.WorkerTest do
       assert %{
                interval: 5000,
                measurement: %{
-                 altitude_m: 99.80845853673719,
                  dew_point_c: 1.8098743179175818,
                  gas_resistance_ohms: 4358.471915520684,
                  humidity_rh: 16.967493893888527,

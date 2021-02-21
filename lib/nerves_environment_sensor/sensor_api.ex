@@ -8,7 +8,6 @@ defmodule NervesEnvironmentSensor.SensorApi do
   @type measurement :: %{
           required(:humidity_rh) => number,
           required(:temperature_c) => number,
-          optional(:altitude_m) => number,
           optional(:dew_point_c) => number,
           optional(:gas_resistance_ohms) => number,
           optional(:pressure_pa) => number,

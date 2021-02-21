@@ -29,7 +29,6 @@ defmodule NervesEnvironmentSensor.SensorDevice.BME680 do
   @spec format_measurement(map) :: SensorApi.measurement()
   def format_measurement(from_sensor) do
     %{
-      altitude_m: from_sensor.altitude_m,
       dew_point_c: from_sensor.dew_point_c,
       gas_resistance_ohms: from_sensor.gas_resistance_ohms,
       pressure_pa: from_sensor.pressure_pa,
