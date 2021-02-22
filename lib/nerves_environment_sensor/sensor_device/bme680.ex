@@ -33,7 +33,8 @@ defmodule NervesEnvironmentSensor.SensorDevice.BME680 do
       gas_resistance_ohms: from_sensor.gas_resistance_ohms,
       pressure_pa: from_sensor.pressure_pa,
       humidity_rh: from_sensor.humidity_rh,
-      temperature_c: from_sensor.temperature_c
+      temperature_c: from_sensor.temperature_c,
+      measured_at: SensorDevice.utc_now_iso8601()
     }
   end
 end

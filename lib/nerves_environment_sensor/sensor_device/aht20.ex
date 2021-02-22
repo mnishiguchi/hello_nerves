@@ -30,7 +30,8 @@ defmodule NervesEnvironmentSensor.SensorDevice.AHT20 do
   def format_measurement(from_sensor) do
     %{
       humidity_rh: from_sensor.humidity_rh,
-      temperature_c: from_sensor.temperature_c
+      temperature_c: from_sensor.temperature_c,
+      measured_at: SensorDevice.utc_now_iso8601()
     }
   end
 end

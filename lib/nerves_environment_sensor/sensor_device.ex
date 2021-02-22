@@ -9,6 +9,8 @@ defmodule NervesEnvironmentSensor.SensorDevice do
 
   @callback start_link(options) :: GenServer.on_start()
   @callback read(pid) :: {:ok, SensorApi.measurement()} | {:error, any()}
+
+  def utc_now_iso8601, do: Timex.format!(Timex.now(), "{ISO:Extended}")
 end
 
 defmodule NervesEnvironmentSensor.SensorDevice.Stub do

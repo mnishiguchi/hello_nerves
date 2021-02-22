@@ -44,9 +44,11 @@ defmodule NervesEnvironmentSensor.Worker do
         {:noreply, %{state | measurement: %{error: reason}}}
 
       {:ok, new_measurement} ->
+        Logger.info("measurement: #{inspect(new_measurement)}")
+
         case post_measurement(new_measurement) do
           {:ok, %{status_code: 201}} ->
-            Logger.info("Success posting measurement: #{inspect(new_measurement)}")
+            Logger.info("Success posting measurement")
             {:noreply, %{state | measurement: new_measurement}}
 
           {:ok, %{status_code: status_code}} ->
