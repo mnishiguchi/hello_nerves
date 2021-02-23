@@ -34,7 +34,7 @@ defmodule NervesEnvironmentSensor.SensorDevice.BME680 do
       pressure_pa: from_sensor.pressure_pa,
       humidity_rh: from_sensor.humidity_rh,
       temperature_c: from_sensor.temperature_c,
-      measured_at: SensorDevice.utc_now_iso8601()
+      measured_at: "#{DateTime.utc_now()}"
     }
   end
 end

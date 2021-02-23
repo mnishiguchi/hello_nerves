@@ -44,7 +44,6 @@ defmodule NervesEnvironmentSensor.MixProject do
       {:elixir_bme680, "~> 0.2.2"},
       {:httpoison, "~> 1.8"},
       {:jason, "~> 1.2"},
-      {:timex, "~> 3.6"},
       {:aht20, github: "mnishiguchi/aht20", branch: "main"},
       {:plug, "~> 1.7"},
 
