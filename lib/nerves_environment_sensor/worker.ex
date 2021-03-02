@@ -64,7 +64,7 @@ defmodule NervesEnvironmentSensor.Worker do
   end
 
   defp init_sensor(opts), do: apply(sensor_device_module(), :start_link, [opts])
-  defp read_sensor(sensor_pid), do: apply(sensor_device_module(), :read, [sensor_pid])
+  defp read_sensor(sensor_pid), do: apply(sensor_device_module(), :measure, [sensor_pid])
   defp post_measurement(measurement), do: apply(sensor_api_module(), :post_measurement, [measurement])
 
   # https://hexdocs.pm/elixir/master/library-guidelines.html#avoid-compile-time-application-configuration

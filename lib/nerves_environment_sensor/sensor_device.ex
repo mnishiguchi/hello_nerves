@@ -8,7 +8,7 @@ defmodule NervesEnvironmentSensor.SensorDevice do
   @type options :: [{:bus_name, String.t()} | {:bus_address, 0..127}]
 
   @callback start_link(options) :: GenServer.on_start()
-  @callback read(pid) :: {:ok, SensorApi.measurement()} | {:error, any()}
+  @callback measure(pid) :: {:ok, SensorApi.measurement()} | {:error, any()}
 end
 
 defmodule NervesEnvironmentSensor.SensorDevice.Stub do
@@ -19,7 +19,7 @@ defmodule NervesEnvironmentSensor.SensorDevice.Stub do
   def start_link(_opts), do: {:ok, fake_pid()}
 
   @impl true
-  def read(_pid), do: {:ok, fake_measurement()}
+  def measure(_pid), do: {:ok, fake_measurement()}
 
   defp fake_pid, do: :c.pid(0, 0, 0)
 

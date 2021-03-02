@@ -19,8 +19,8 @@ defmodule NervesEnvironmentSensor.SensorDevice.BME680 do
   end
 
   @impl true
-  def read(pid) do
-    case BMP280.read(pid) do
+  def measure(pid) do
+    case BMP280.measure(pid) do
       {:ok, measurement} -> {:ok, format_measurement(measurement)}
       {:error, reason} -> {:error, reason}
     end
