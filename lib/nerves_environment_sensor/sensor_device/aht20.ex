@@ -20,7 +20,7 @@ defmodule NervesEnvironmentSensor.SensorDevice.AHT20 do
 
   @impl true
   def measure(pid) do
-    case AHT20.read_data(pid) do
+    case AHT20.measure(pid) do
       {:ok, measurement} -> {:ok, format_measurement(measurement)}
       {:error, reason} -> {:error, reason}
     end
