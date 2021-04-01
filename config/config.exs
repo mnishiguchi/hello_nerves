@@ -8,10 +8,10 @@ import Config
 # Enable the Nerves integration with Mix
 Application.start(:nerves_bootstrap)
 
-config :nerves_environment_sensor,
+config :hello_nerves,
   target: Mix.target(),
-  sensor_device_module: NervesEnvironmentSensor.SensorDevice.BME680,
-  sensor_api_module: NervesEnvironmentSensor.SensorApi.Web,
+  sensor_device_module: HelloNerves.SensorDevice.BME680,
+  sensor_api_module: HelloNerves.SensorApi.Web,
   sensor_api_url: System.fetch_env!("SENSOR_API_URL")
 
 # Customize non-Elixir parts of the firmware. See

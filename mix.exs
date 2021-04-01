@@ -1,7 +1,7 @@
-defmodule NervesEnvironmentSensor.MixProject do
+defmodule HelloNerves.MixProject do
   use Mix.Project
 
-  @app :nerves_environment_sensor
+  @app :hello_nerves
   @version "0.1.0"
   @all_targets [:rpi, :rpi0, :rpi2, :rpi3, :rpi3a, :rpi4, :bbb, :osd32mp1, :x86_64]
 
@@ -23,7 +23,7 @@ defmodule NervesEnvironmentSensor.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: {NervesEnvironmentSensor.Application, []},
+      mod: {HelloNerves.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

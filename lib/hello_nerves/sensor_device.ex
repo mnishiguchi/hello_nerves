@@ -1,9 +1,9 @@
-defmodule NervesEnvironmentSensor.SensorDevice do
+defmodule HelloNerves.SensorDevice do
   @moduledoc """
   Defines a behaviour required for an external sensor device.
   """
 
-  alias NervesEnvironmentSensor.SensorApi
+  alias HelloNerves.SensorApi
 
   @type options :: [{:bus_name, String.t()} | {:bus_address, 0..127}]
 
@@ -11,9 +11,9 @@ defmodule NervesEnvironmentSensor.SensorDevice do
   @callback measure(pid) :: {:ok, SensorApi.measurement()} | {:error, any()}
 end
 
-defmodule NervesEnvironmentSensor.SensorDevice.Stub do
+defmodule HelloNerves.SensorDevice.Stub do
   @moduledoc false
-  @behaviour NervesEnvironmentSensor.SensorDevice
+  @behaviour HelloNerves.SensorDevice
 
   @impl true
   def start_link(_opts), do: {:ok, fake_pid()}

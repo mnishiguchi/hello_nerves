@@ -1,4 +1,4 @@
-defmodule NervesEnvironmentSensor.Worker do
+defmodule HelloNerves.Worker do
   @moduledoc """
   Repeats posting a sensor measurement to an external API.
   """
@@ -68,6 +68,6 @@ defmodule NervesEnvironmentSensor.Worker do
   defp post_measurement(measurement), do: apply(sensor_api_module(), :post_measurement, [measurement])
 
   # https://hexdocs.pm/elixir/master/library-guidelines.html#avoid-compile-time-application-configuration
-  defp sensor_device_module(), do: Application.fetch_env!(:nerves_environment_sensor, :sensor_device_module)
-  defp sensor_api_module(), do: Application.fetch_env!(:nerves_environment_sensor, :sensor_api_module)
+  defp sensor_device_module(), do: Application.fetch_env!(:hello_nerves, :sensor_device_module)
+  defp sensor_api_module(), do: Application.fetch_env!(:hello_nerves, :sensor_api_module)
 end

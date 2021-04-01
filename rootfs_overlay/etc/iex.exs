@@ -14,7 +14,7 @@ if RingLogger in Application.get_env(:logger, :backends, []) do
   """)
 end
 
-alias NervesEnvironmentSensor.{
+alias HelloNerves.{
   SensorApi,
   SensorDevice,
   Worker

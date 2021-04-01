@@ -1,4 +1,4 @@
-defmodule NervesEnvironmentSensor.SensorApi do
+defmodule HelloNerves.SensorApi do
   @moduledoc """
   Represents an external API that accepts sensor measurements.
   """
@@ -15,10 +15,10 @@ defmodule NervesEnvironmentSensor.SensorApi do
         }
 end
 
-defmodule NervesEnvironmentSensor.SensorApi.Web do
+defmodule HelloNerves.SensorApi.Web do
   @moduledoc false
 
-  @behaviour NervesEnvironmentSensor.SensorApi
+  @behaviour HelloNerves.SensorApi
 
   @impl true
   def post_measurement(measurement) do
@@ -26,13 +26,13 @@ defmodule NervesEnvironmentSensor.SensorApi.Web do
     HTTPoison.post(endpoint_url(), json, [{"Content-Type", "application/json"}])
   end
 
-  defp endpoint_url, do: Application.fetch_env!(:nerves_environment_sensor, :sensor_api_url)
+  defp endpoint_url, do: Application.fetch_env!(:hello_nerves, :sensor_api_url)
 end
 
-defmodule NervesEnvironmentSensor.SensorApi.Stub do
+defmodule HelloNerves.SensorApi.Stub do
   @moduledoc false
 
-  @behaviour NervesEnvironmentSensor.SensorApi
+  @behaviour HelloNerves.SensorApi
 
   @impl true
   def post_measurement(_measurement), do: {:ok, %{status_code: 201}}

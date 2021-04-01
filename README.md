@@ -1,4 +1,4 @@
-# NervesEnvironmentSensor
+# HelloNerves
 
 A Nerves-powered app that reads data from a sensor and sends it to a remote server periodically.
 

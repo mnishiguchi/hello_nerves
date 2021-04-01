@@ -4,6 +4,6 @@ import Config
 
 # Use the mocks defined in test/support/mocks.ex
 # https://hexdocs.pm/mox/Mox.html
-config :nerves_environment_sensor,
-  sensor_device_module: NervesEnvironmentSensor.MockSensorDevice,
-  sensor_api_module: NervesEnvironmentSensor.MockSensorApi
+config :hello_nerves,
+  sensor_device_module: HelloNerves.MockSensorDevice,
+  sensor_api_module: HelloNerves.MockSensorApi

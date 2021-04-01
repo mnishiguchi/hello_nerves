@@ -1,4 +1,4 @@
-defmodule NervesEnvironmentSensor.Application do
+defmodule HelloNerves.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -8,7 +8,7 @@ defmodule NervesEnvironmentSensor.Application do
   def start(_type, _args) do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: NervesEnvironmentSensor.Supervisor]
+    opts = [strategy: :one_for_one, name: HelloNerves.Supervisor]
 
     children =
       [
@@ -28,11 +28,11 @@ defmodule NervesEnvironmentSensor.Application do
   def children(_target) do
     [
       # Children for all targets except host
-      {NervesEnvironmentSensor.Worker, nil}
+      {HelloNerves.Worker, nil}
     ]
   end
 
   def target() do
-    Application.get_env(:nerves_environment_sensor, :target)
+    Application.get_env(:hello_nerves, :target)
   end
 end

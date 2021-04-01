@@ -1,10 +1,10 @@
-defmodule NervesEnvironmentSensor.WorkerTest do
+defmodule HelloNerves.WorkerTest do
   use ExUnit.Case
 
   # https://hexdocs.pm/mox/Mox.html
   import Mox
 
-  alias NervesEnvironmentSensor.{
+  alias HelloNerves.{
     MockSensorApi,
     MockSensorDevice,
     SensorApi,
