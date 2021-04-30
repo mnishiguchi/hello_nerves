@@ -1,6 +1,8 @@
 # HelloNerves
 
-A Nerves-powered app that reads data from a sensor and sends it to a remote server periodically.
+A [Nerves](https://www.nerves-project.org/)-powered app that reads data from a sensor and sends it to a remote server periodically.
+
+![pi_and_bme680](https://user-images.githubusercontent.com/7563926/113063889-04f7ee80-9184-11eb-8213-90fe7fbb39b8.jpg)
 
 ![](https://user-images.githubusercontent.com/7563926/108598430-7cec2100-735b-11eb-86a9-3cdc6d85156f.png)
 
