@@ -46,6 +46,7 @@ defmodule HelloNerves.MixProject do
       {:jason, "~> 1.2"},
       {:aht20, github: "mnishiguchi/aht20", branch: "main"},
       {:plug, "~> 1.7"},
+      {:i2c_server, "~> 0.1"},
 
       # Dependencies for all targets except :host
       {:nerves_runtime, "~> 0.11.3", targets: @all_targets},
@@ -63,7 +64,7 @@ defmodule HelloNerves.MixProject do
       {:nerves_system_x86_64, "~> 1.13", runtime: false, targets: :x86_64},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:mox, "~> 1.0.0", only: :test}
+      {:mox, "~> 1.0.0", only: :test},
     ]
   end
 
