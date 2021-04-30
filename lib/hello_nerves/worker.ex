@@ -7,41 +7,74 @@ defmodule HelloNerves.Worker do
 
   require Logger
 
-  @default_interval :timer.seconds(1)
+  @type options() :: [
+          bus_name: binary,
+          bus_address: 0..127,
+          interval_ms: pos_integer()
+        ]
 
-  def start_link(opts \\ []), do: GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+  @type state() :: %{
+          bus_name: nil | binary,
+          bus_address: nil | 0..127,
+          interval_ms: pos_integer(),
+          measurement: nil | SensorApi.measurement() | %{error: any},
+          sensor_pid: nil | pid
+        }
+
+  @default_interval_ms 1_000
+
+  @spec start_link(options) :: GenServer.on_start()
+  def start_link(options \\ []) do
+    GenServer.start_link(__MODULE__, options, name: __MODULE__)
+  end
+
   def whereis, do: Process.whereis(__MODULE__)
   def get_state, do: :sys.get_state(__MODULE__)
   def shutdown, do: Process.exit(whereis(), :shutdown)
 
-  @impl true
-  def init(opts \\ []) do
-    {:ok, sensor_pid} = init_sensor(bus_name: opts[:bus_name], bus_address: opts[:bus_address])
-
+  @impl GenServer
+  def init(options) do
     # Interval and measurement do not have to be kept in the state but are nice to have for ease of testing.
-    state = %{
-      interval: opts[:interval] || @default_interval,
+    initial_state = %{
+      bus_name: options[:bus_name],
+      bus_address: options[:bus_address],
+      interval_ms: options[:interval_ms] || @default_interval_ms,
       measurement: nil,
-      sensor_pid: sensor_pid
+      sensor_pid: nil
     }
 
-    {:ok, state, {:continue, :after_init}}
+    {:ok, initial_state, {:continue, :init_sensor}}
   end
 
-  @impl true
-  def handle_continue(:after_init, state) do
-    send(self(), :schedule_measurement)
+  @impl GenServer
+  def handle_continue(:init_sensor, state) do
+    {:ok, sensor_pid} = init_sensor(bus_name: state.bus_name, bus_address: state.bus_address)
+    state = %{state | sensor_pid: sensor_pid}
+
+    {:noreply, state, {:continue, :start_measurement}}
+  end
+
+  def handle_continue(:start_measurement, state) do
+    state = read_sensor_and_post_measurement(state)
+    Process.send_after(self(), :schedule_measurement, state.interval_ms)
+
     {:noreply, state}
   end
 
-  @impl true
-  def handle_info(:schedule_measurement, %{sensor_pid: sensor_pid, interval: interval} = state) do
-    Process.send_after(self(), :schedule_measurement, interval)
+  @impl GenServer
+  def handle_info(:schedule_measurement, state) do
+    state = read_sensor_and_post_measurement(state)
+    Process.send_after(self(), :schedule_measurement, state.interval_ms)
 
-    case read_sensor(sensor_pid) do
+    {:noreply, state}
+  end
+
+  @spec read_sensor_and_post_measurement(state) :: state
+  def read_sensor_and_post_measurement(state) do
+    case read_sensor(state.sensor_pid) do
       {:error, reason} ->
         Logger.error("Error reading sensor: #{reason}")
-        {:noreply, %{state | measurement: %{error: reason}}}
+        %{state | measurement: %{error: reason}}
 
       {:ok, new_measurement} ->
         Logger.info("measurement: #{inspect(new_measurement)}")
@@ -49,16 +82,16 @@ defmodule HelloNerves.Worker do
         case post_measurement(new_measurement) do
           {:ok, %{status_code: 201}} ->
             Logger.info("Success posting measurement")
-            {:noreply, %{state | measurement: new_measurement}}
+            %{state | measurement: new_measurement}
 
           {:ok, %{status_code: status_code}} ->
             reason = Plug.Conn.Status.reason_atom(status_code)
             Logger.error("Error posting measurement: #{reason}")
-            {:noreply, %{state | measurement: %{error: reason}}}
+            %{state | measurement: %{error: reason}}
 
           {:error, %{reason: reason}} ->
             Logger.error("Error posting measurement: #{reason}")
-            {:noreply, %{state | measurement: %{error: reason}}}
+            %{state | measurement: %{error: reason}}
         end
     end
   end

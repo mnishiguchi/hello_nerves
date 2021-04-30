@@ -64,7 +64,7 @@ defmodule HelloNerves.MixProject do
       {:nerves_system_x86_64, "~> 1.13", runtime: false, targets: :x86_64},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:mox, "~> 1.0.0", only: :test},
+      {:mox, "~> 1.0.0", only: :test}
     ]
   end
 

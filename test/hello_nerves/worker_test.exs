@@ -26,11 +26,11 @@ defmodule HelloNerves.WorkerTest do
 
   describe "start_link" do
     test "has correct state" do
-      assert {:ok, pid} = Worker.start_link(interval: 5000)
+      assert {:ok, pid} = Worker.start_link(interval_ms: 5000)
       result1 = :sys.get_state(pid)
 
       assert %{
-               interval: 5000,
+               interval_ms: 5000,
                measurement: %{
                  dew_point_c: 1.8098743179175818,
                  gas_resistance_ohms: 4358.471915520684,
@@ -47,6 +47,7 @@ defmodule HelloNerves.WorkerTest do
       |> Mox.expect(:post_measurement, 1, fn _measurement -> {:ok, %{status_code: 400}} end)
 
       assert {:ok, pid} = Worker.start_link()
+
       assert %{measurement: %{error: :bad_request}} = :sys.get_state(pid)
     end
 
