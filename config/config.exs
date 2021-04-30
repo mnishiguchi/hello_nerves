@@ -8,12 +8,7 @@ import Config
 # Enable the Nerves integration with Mix
 Application.start(:nerves_bootstrap)
 
-config :hello_nerves,
-  target: Mix.target(),
-  sensor_device_module: HelloNerves.SensorDevice.BME680,
-  sensor_api_module: HelloNerves.SensorApi.Web,
-  sensor_api_url: System.fetch_env!("SENSOR_API_URL"),
-  mn_environment_api_token: System.fetch_env!("MN_ENVIRONMENT_API_TOKEN")
+config :hello_nerves, target: Mix.target()
 
 # Customize non-Elixir parts of the firmware. See
 # https://hexdocs.pm/nerves/advanced-configuration.html for details.
@@ -31,8 +26,11 @@ config :nerves, source_date_epoch: "1612181271"
 
 config :logger, backends: [RingLogger]
 
-if Mix.target() == :host or Mix.target() == :"" do
-  import_config "host.exs"
-else
-  import_config "target.exs"
+case Mix.target() do
+  :host -> "host.exs"
+  :"" -> "host.exs"
+  :dec -> "host.exs"
+  :test -> "host.exs"
+  _ -> "target.exs"
 end
+|> import_config

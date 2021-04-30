@@ -13,6 +13,7 @@ defmodule HelloNerves.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       archives: [nerves_bootstrap: "~> 1.10"],
       start_permanent: Mix.env() == :prod,
+      aliases: aliases(),
       build_embedded: true,
       deps: deps(),
       releases: [{@app, release()}],
@@ -28,7 +29,8 @@ defmodule HelloNerves.MixProject do
     ]
   end
 
-  # ensure test/support is compiled
+  # Ensure test/support is compiled
+  defp elixirc_paths(:dev), do: ["lib", "test/support"]
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
@@ -47,6 +49,9 @@ defmodule HelloNerves.MixProject do
       {:aht20, github: "mnishiguchi/aht20", branch: "main"},
       {:plug, "~> 1.7"},
       {:i2c_server, "~> 0.1"},
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:mox, "~> 1.0.0", only: [:dev, :test]},
 
       # Dependencies for all targets except :host
       {:nerves_runtime, "~> 0.11.3", targets: @all_targets},
@@ -61,10 +66,7 @@ defmodule HelloNerves.MixProject do
       {:nerves_system_rpi4, "~> 1.13", runtime: false, targets: :rpi4},
       {:nerves_system_bbb, "~> 2.8", runtime: false, targets: :bbb},
       {:nerves_system_osd32mp1, "~> 0.4", runtime: false, targets: :osd32mp1},
-      {:nerves_system_x86_64, "~> 1.13", runtime: false, targets: :x86_64},
-      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:mox, "~> 1.0.0", only: :test}
+      {:nerves_system_x86_64, "~> 1.13", runtime: false, targets: :x86_64}
     ]
   end
 
@@ -75,6 +77,20 @@ defmodule HelloNerves.MixProject do
       include_erts: &Nerves.Release.erts/0,
       steps: [&Nerves.Release.init/1, :assemble],
       strip_beams: Mix.env() == :prod
+    ]
+  end
+
+  # Aliases are shortcuts or tasks specific to the current project.
+  # For example, to install project dependencies and perform other setup tasks, run:
+  #
+  #     $ mix setup
+  #
+  # See the documentation for `Mix` for more info on aliases.
+  defp aliases do
+    [
+      setup: ~w[deps.get],
+      test: ~w[format credo test dialyzer],
+      deploy: ~w[firmware upload]
     ]
   end
 end

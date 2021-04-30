@@ -17,7 +17,7 @@ defmodule HelloNerves.Worker do
           bus_name: nil | binary,
           bus_address: nil | 0..127,
           interval_ms: pos_integer(),
-          measurement: nil | SensorApi.measurement() | %{error: any},
+          measurement: nil | HelloNerves.SensorApi.measurement() | %{error: any},
           sensor_pid: nil | pid
         }
 

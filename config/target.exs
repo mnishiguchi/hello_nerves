@@ -106,6 +106,13 @@ config :mdns_lite,
     }
   ]
 
+config :hello_nerves,
+  target: Mix.target(),
+  sensor_device_module: HelloNerves.SensorDevice.BME680,
+  sensor_api_module: HelloNerves.SensorApi.Web,
+  sensor_api_url: System.fetch_env!("SENSOR_API_URL"),
+  mn_environment_api_token: System.fetch_env!("MN_ENVIRONMENT_API_TOKEN")
+
 # https://github.com/lau/tzdata#data-directory-and-releases
 config :tzdata, :data_dir, "/data/tzdata"
 
