@@ -19,5 +19,5 @@ defmodule HelloNerves.SensorApi.Web do
 
   defp endpoint_url, do: Application.fetch_env!(:hello_nerves, :sensor_api_url)
 
-  defp api_token, do: Application.fetch_env!(:hello_nerves, :mn_environment_api_token)
+  defp api_token, do: Application.fetch_env!(:hello_nerves, :sensor_api_token)
 end
