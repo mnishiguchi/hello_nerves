@@ -79,21 +79,29 @@ defmodule HelloNerves.Worker do
       {:ok, new_measurement} ->
         Logger.info("measurement: #{inspect(new_measurement)}")
 
-        case post_measurement(new_measurement) do
-          {:ok, %{status_code: 201}} ->
-            Logger.info("Success posting measurement")
-            %{state | measurement: new_measurement}
-
-          {:ok, %{status_code: status_code}} ->
-            reason = Plug.Conn.Status.reason_atom(status_code)
-            Logger.error("Error posting measurement: #{reason}")
-            %{state | measurement: %{error: reason}}
-
-          {:error, %{reason: reason}} ->
-            Logger.error("Error posting measurement: #{reason}")
-            %{state | measurement: %{error: reason}}
-        end
+        new_measurement
+        |> post_measurement()
+        |> api_response_to_state(new_measurement, state)
     end
+  end
+
+  defp api_response_to_state({:ok, %{status_code: 201}}, new_measurement, state) do
+    Logger.info("Success posting measurement")
+
+    %{state | measurement: new_measurement}
+  end
+
+  defp api_response_to_state({:ok, %{status_code: status_code}}, _new_measurement, state) do
+    reason = Plug.Conn.Status.reason_atom(status_code)
+    Logger.error("Error posting measurement: #{reason}")
+
+    %{state | measurement: %{error: reason}}
+  end
+
+  defp api_response_to_state({:error, %{reason: reason}}, _new_measurement, state) do
+    Logger.error("Error posting measurement: #{reason}")
+
+    %{state | measurement: %{error: reason}}
   end
 
   defp init_sensor(opts), do: apply(sensor_device_module(), :start_link, [opts])
