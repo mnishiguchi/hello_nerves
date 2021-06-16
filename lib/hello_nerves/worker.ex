@@ -49,6 +49,7 @@ defmodule HelloNerves.Worker do
   @impl GenServer
   def handle_continue(:init_sensor, state) do
     {:ok, sensor_pid} = init_sensor(bus_name: state.bus_name, bus_address: state.bus_address)
+    {:ok, _} = SGP40.start_link(bus_name: state.bus_name, name: SGP40)
     state = %{state | sensor_pid: sensor_pid}
 
     {:noreply, state, {:continue, :start_measurement}}
@@ -78,8 +79,13 @@ defmodule HelloNerves.Worker do
 
       {:ok, new_measurement} ->
         Logger.info("measurement: #{inspect(new_measurement)}")
+        :ok = SGP40.update_rht(SGP40, new_measurement.humidity_rh, new_measurement.temperature_c)
+        {:ok, %{voc_index: voc_index}} = SGP40.measure(SGP40)
 
         new_measurement
+        # Inject voc index from SGP40
+        # TODO: rename gas_resistance_ohms to IAQ
+        |> Map.put(:gas_resistance_ohms, voc_index)
         |> post_measurement()
         |> api_response_to_state(new_measurement, state)
     end
