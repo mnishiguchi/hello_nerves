@@ -78,14 +78,15 @@ defmodule HelloNerves.Worker do
         %{state | measurement: %{error: reason}}
 
       {:ok, new_measurement} ->
-        Logger.info("measurement: #{inspect(new_measurement)}")
         :ok = SGP40.update_rht(SGP40, new_measurement.humidity_rh, new_measurement.temperature_c)
         {:ok, %{voc_index: voc_index}} = SGP40.measure(SGP40)
 
+        Logger.info("measurement: #{inspect(new_measurement)}")
+        Logger.info("voc_index: #{inspect(voc_index)}")
+
         new_measurement
-        # Inject voc index from SGP40
-        # TODO: rename gas_resistance_ohms to IAQ
-        |> Map.put(:gas_resistance_ohms, voc_index)
+        # Inject voc index from SGP40 as IAQ
+        |> Map.put(:iaq, voc_index)
         |> post_measurement()
         |> api_response_to_state(new_measurement, state)
     end
