@@ -70,7 +70,13 @@ config :vintage_net,
            }
          ]
        },
-       ipv4: %{method: :dhcp}
+       ipv4: %{
+         method: :static,
+         address: "10.0.0.200",
+         prefix_length: 24,
+         gateway: "10.0.0.1",
+         name_servers: ["1.1.1.1"]
+       }
      }}
   ]
 
@@ -81,7 +87,7 @@ config :mdns_lite,
   # "nerves.local" for convenience. If more than one Nerves device is on the
   # network, delete "nerves" from the list.
 
-  host: [:hostname, "nerves"],
+  host: [:hostname, "hello-nerves"],
   ttl: 120,
 
   # Advertise the following services over mDNS.
