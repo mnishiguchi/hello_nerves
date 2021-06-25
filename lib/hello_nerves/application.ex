@@ -5,6 +5,9 @@ defmodule HelloNerves.Application do
 
   use Application
 
+  # https://hexdocs.pm/nerves/advanced-configuration.html#partitions
+  @nerves_data_dir "/data"
+
   def start(_type, _args) do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
@@ -28,7 +31,8 @@ defmodule HelloNerves.Application do
   def children(_target) do
     [
       # Children for all targets except host
-      {HelloNerves.Worker, nil}
+      {HelloNerves.Worker, nil},
+      {CubDB, [data_dir: @nerves_data_dir, name: CubDB]}
     ]
   end
 
