@@ -5,19 +5,15 @@ defmodule HelloNerves.SensorDevice.AHT20 do
 
   @behaviour SensorDevice
 
-  @default_bus_name "i2c-1"
-  @default_bus_address 0x38
-
   @impl HelloNerves.SensorDevice
   def start_link(opts \\ []) do
-    bus_name = opts[:bus_name] || @default_bus_name
-    bus_address = opts[:bus_address] || @default_bus_address
+    bus_name = opts[:bus_name] || "i2c-1"
 
-    AHT20.start_link(bus_name: bus_name, bus_address: bus_address)
+    AHT20.start_link(bus_name: bus_name, name: __MODULE__)
   end
 
   @impl HelloNerves.SensorDevice
-  def measure(pid) do
+  def measure(pid \\ __MODULE__) do
     case AHT20.measure(pid) do
       {:ok, measurement} -> {:ok, format_measurement(measurement)}
       {:error, reason} -> {:error, reason}

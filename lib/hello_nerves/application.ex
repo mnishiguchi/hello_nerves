@@ -31,8 +31,9 @@ defmodule HelloNerves.Application do
   def children(_target) do
     [
       # Children for all targets except host
-      {HelloNerves.Worker, nil},
-      {CubDB, [data_dir: @nerves_data_dir, name: CubDB]}
+      {CubDB, [data_dir: @nerves_data_dir, name: CubDB]},
+      {HelloNerves.SGP40States.Persister, nil},
+      {HelloNerves.Worker, nil}
     ]
   end
 
