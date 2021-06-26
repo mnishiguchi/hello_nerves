@@ -91,8 +91,22 @@ defmodule HelloNerves.MixProject do
   defp aliases do
     [
       setup: ~w[deps.get],
-      test: ~w[format credo test dialyzer],
-      deploy: ~w[firmware upload]
+      format: ~w[format credo],
+      test: ~w[format test],
+      "prod.firmware": [&prod_firmware/1],
+      "prod.upload": [&prod_upload/1]
     ]
+  end
+
+  defp prod_firmware(_args) do
+    :ok = System.put_env([{"MIX_ENV", "prod"}])
+    {_, 0} = System.cmd("mix", ["deps.get"], into: IO.stream(:stdio, :line))
+    {_, 0} = System.cmd("mix", ["deps.compile"], into: IO.stream(:stdio, :line))
+    {_, 0} = System.cmd("mix", ["firmware"], into: IO.stream(:stdio, :line))
+  end
+
+  defp prod_upload(_args) do
+    :ok = System.put_env([{"MIX_ENV", "prod"}])
+    {_, 0} = System.cmd("mix", ["upload"], into: IO.stream(:stdio, :line))
   end
 end
