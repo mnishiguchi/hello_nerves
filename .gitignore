@@ -20,3 +20,5 @@ erl_crash.dump
 .envrc
 
 .elixir_ls
+
+/tmp/
