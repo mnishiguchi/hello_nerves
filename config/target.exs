@@ -51,6 +51,8 @@ config :nerves_ssh,
 # See https://github.com/nerves-networking/vintage_net for more information
 config :vintage_net,
   regulatory_domain: "US",
+  # https://github.com/nerves-networking/mdns_lite#dns-bridge-configuration
+  additional_name_servers: [{127, 0, 0, 53}],
   config: [
     {"usb0", %{type: VintageNetDirect}},
     {"eth0",
@@ -62,13 +64,19 @@ config :vintage_net,
   ]
 
 config :mdns_lite,
+  # Use MdnsLite's DNS bridge feature to support mDNS resolution in Erlang
+  # https://github.com/nerves-networking/mdns_lite#dns-bridge-configuration
+  dns_bridge_enabled: true,
+  dns_bridge_port: 53,
+  dns_bridge_recursive: false,
+
   # The `host` key specifies what hostnames mdns_lite advertises.  `:hostname`
   # advertises the device's hostname.local. For the official Nerves systems, this
   # is "nerves-<4 digit serial#>.local".  mdns_lite also advertises
   # "nerves.local" for convenience. If more than one Nerves device is on the
   # network, delete "nerves" from the list.
 
-  host: [:hostname, "nerves"],
+  host: [:hostname, System.get_env("NERVES_HOSTNAME", "nerves")],
   ttl: 120,
 
   # Advertise the following services over mDNS.
