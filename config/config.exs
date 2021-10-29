@@ -26,6 +26,10 @@ config :nerves, source_date_epoch: "1612181271"
 
 config :logger, backends: [RingLogger]
 
+config :kantan_cluster,
+  node: "nerves",
+  cookie: :hello
+
 case Mix.target() do
   :host -> "host.exs"
   :"" -> "host.exs"

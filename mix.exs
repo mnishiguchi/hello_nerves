@@ -3,7 +3,6 @@ defmodule HelloNerves.MixProject do
 
   @app :hello_nerves
   @version "0.1.0"
-  @all_targets [:rpi, :rpi0, :rpi2, :rpi3, :rpi3a, :rpi4, :bbb, :osd32mp1, :x86_64]
 
   def project do
     [
@@ -42,9 +41,10 @@ defmodule HelloNerves.MixProject do
       {:shoehorn, "~> 0.7.0"},
       {:ring_logger, "~> 0.8.1"},
       {:toolshed, "~> 0.2.13"},
+      {:nerves_runtime, "~> 0.11.3"},
+      {:nerves_pack, "~> 0.6.0"},
       {:aht20, "~> 0.4"},
       {:bmp280, "~> 0.2"},
-      {:sgp40, path: "../sgp40"},
       {:elixir_bme680, "~> 0.2"},
       {:httpoison, "~> 1.8"},
       {:jason, "~> 1.2"},
@@ -53,10 +53,6 @@ defmodule HelloNerves.MixProject do
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:mox, "~> 1.0.0", only: [:dev, :test]},
-
-      # Dependencies for all targets except :host
-      {:nerves_runtime, "~> 0.11.3", targets: @all_targets},
-      {:nerves_pack, "~> 0.6.0", targets: @all_targets},
 
       # Dependencies for specific targets
       {:nerves_system_rpi, "~> 1.15", runtime: false, targets: :rpi},
@@ -68,7 +64,11 @@ defmodule HelloNerves.MixProject do
       {:nerves_system_bbb, "~> 2.10", runtime: false, targets: :bbb},
       {:nerves_system_osd32mp1, "~> 0.6", runtime: false, targets: :osd32mp1},
       {:nerves_system_x86_64, "~> 1.15", runtime: false, targets: :x86_64},
-      {:nerves_system_npi_imx6ull, "~> 0.2", runtime: false, targets: :npi_imx6ull}
+      {:nerves_system_npi_imx6ull, "~> 0.2", runtime: false, targets: :npi_imx6ull},
+
+      # local
+      {:sgp40, path: "../sgp40"},
+      {:kantan_cluster, path: "../kantan_cluster"}
     ]
   end
 
