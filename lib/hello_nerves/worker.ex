@@ -84,6 +84,7 @@ defmodule HelloNerves.Worker do
         # Inject voc index from SGP40 as IAQ
         |> Map.put(:iaq, voc_index)
         |> tap(fn x -> Logger.info("[hello_nerves] Posting measurement: #{inspect(x)}") end)
+        |> broadcast_measurement()
         |> post_measurement()
         |> api_response_to_state(new_measurement, state)
     end
@@ -111,6 +112,13 @@ defmodule HelloNerves.Worker do
   defp init_rht_sensor(opts), do: apply(sensor_device_module(), :start_link, [opts])
 
   defp read_rht_sensor(), do: apply(sensor_device_module(), :measure, [])
+
+  defp broadcast_measurement(measurement) do
+    # Assume that everybody uses KantanCluster's pubsub.
+    msg = {:hello_nerves_measurement, measurement, Node.self()}
+    :ok = KantanCluster.broadcast("hello_nerves:measurements", msg)
+    measurement
+  end
 
   defp post_measurement(measurement), do: apply(sensor_api_module(), :post_measurement, [measurement])
 

@@ -9,6 +9,9 @@ defmodule HelloNerves.Application do
   @nerves_data_dir "/data"
 
   def start(_type, _args) do
+    # Form an Erlang cluster.
+    KantanCluster.start(node: "nerves", cookie: :hello, connect_to: [])
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: HelloNerves.Supervisor]

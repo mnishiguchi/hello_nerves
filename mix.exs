@@ -50,6 +50,7 @@ defmodule HelloNerves.MixProject do
       {:jason, "~> 1.2"},
       {:plug, "~> 1.7"},
       {:cubdb, "~> 1.0"},
+      {:phoenix_pubsub, "~> 2.0"},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:mox, "~> 1.0.0", only: [:dev, :test]},
