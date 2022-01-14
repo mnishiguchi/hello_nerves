@@ -4,10 +4,12 @@ defmodule HelloNerves.SensorApi.Web do
   @behaviour HelloNerves.SensorApi
 
   @impl HelloNerves.SensorApi
-  def post_measurement(measurement) do
-    json = Jason.encode!(%{measurement: measurement})
-
-    HTTPoison.post(endpoint_url(), json, req_headers())
+  def post_measurement(measurement) when is_map(measurement) do
+    body = Jason.encode!(%{measurement: measurement})
+    res = Req.post!(endpoint_url(), body, headers: req_headers())
+    {:ok, res}
+  rescue
+    e -> {:error, e}
   end
 
   defp req_headers do

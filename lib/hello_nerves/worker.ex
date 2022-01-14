@@ -90,21 +90,21 @@ defmodule HelloNerves.Worker do
     end
   end
 
-  defp api_response_to_state({:ok, %{status_code: 201}}, new_measurement, state) do
+  defp api_response_to_state({:ok, %{status: 201}}, new_measurement, state) do
     Logger.info("[hello_nerves] Success posting measurement")
 
     %{state | measurement: new_measurement}
   end
 
-  defp api_response_to_state({:ok, %{status_code: status_code}}, _, state) do
-    reason = Plug.Conn.Status.reason_atom(status_code)
-    Logger.error("[hello_nerves] Error posting measurement: #{reason}")
+  defp api_response_to_state({:ok, %{status: status}}, _, state) do
+    reason = Plug.Conn.Status.reason_atom(status)
+    Logger.error("[hello_nerves] Error posting measurement: #{inspect(reason)}")
 
     %{state | measurement: %{error: reason}}
   end
 
-  defp api_response_to_state({:error, %{reason: reason}}, _, state) do
-    Logger.error("[hello_nerves] Error posting measurement: #{reason}")
+  defp api_response_to_state({:error, reason}, _, state) do
+    Logger.error("[hello_nerves] Error posting measurement: #{inspect(reason)}")
 
     %{state | measurement: %{error: reason}}
   end
