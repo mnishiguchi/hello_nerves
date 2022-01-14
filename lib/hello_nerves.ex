@@ -14,7 +14,6 @@ defmodule HelloNerves do
           measurement: nil | HelloNerves.SensorApi.measurement() | %{error: any}
         }
 
-  @sgp40_server __MODULE__.SGP40
   @default_interval_ms 1_000
   @log_prefix "HelloNerves: "
 
@@ -28,11 +27,11 @@ defmodule HelloNerves do
     }
   end
 
-  @spec init_sensors(t()) :: t()
+  @spec init_sensors(t()) :: t() | no_return()
   def init_sensors(state) do
     Logger.info("#{@log_prefix} Initializing sensors}")
     {:ok, _} = sensor_device_mod().start_link(bus_name: state.bus_name)
-    {:ok, _} = init_sgp40(bus_name: state.bus_name)
+    {:ok, _} = HelloNerves.SGP40Device.start_link(bus_name: state.bus_name)
     state
   end
 
@@ -51,14 +50,11 @@ defmodule HelloNerves do
         %{state | measurement: %{error: reason}}
 
       {:ok, new_measurement} ->
-        :ok =
-          SGP40.update_rht(
-            @sgp40_server,
+        voc_index =
+          HelloNerves.SGP40Device.measure!(
             new_measurement.humidity_rh,
             new_measurement.temperature_c
           )
-
-        {:ok, %{voc_index: voc_index}} = SGP40.measure(@sgp40_server)
 
         new_measurement
         # Inject voc index from SGP40 as IAQ
@@ -88,13 +84,6 @@ defmodule HelloNerves do
     msg = {:hello_nerves_measurement, measurement, node()}
     :ok = KantanCluster.broadcast("hello_nerves:measurements", msg)
     measurement
-  end
-
-  @spec init_sgp40(bus_name: binary()) :: {:ok, pid()}
-  defp init_sgp40(opts) do
-    result = {:ok, _} = SGP40.start_link(bus_name: opts[:bus_name], name: @sgp40_server)
-    HelloNerves.SGP40States.restore_states()
-    result
   end
 
   defp sensor_device_mod(), do: Application.fetch_env!(:hello_nerves, :sensor_device_module)
