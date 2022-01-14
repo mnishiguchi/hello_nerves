@@ -11,7 +11,6 @@ defmodule HelloNerves.SensorApi do
           required(:measured_at) => String.t(),
           optional(:iaq) => number,
           optional(:dew_point_c) => number,
-          optional(:pressure_pa) => number,
-          optional(:__struct__) => atom
+          optional(:pressure_pa) => number
         }
 end

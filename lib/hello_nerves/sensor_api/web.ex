@@ -6,7 +6,7 @@ defmodule HelloNerves.SensorApi.Web do
   @impl HelloNerves.SensorApi
   def post_measurement(measurement) when is_map(measurement) do
     body = Jason.encode!(%{measurement: measurement})
-    res = Req.post!(endpoint_url(), body, headers: req_headers())
+    res = %Req.Response{} = Req.post!(endpoint_url(), body, headers: req_headers())
     {:ok, res}
   rescue
     e -> {:error, e}
